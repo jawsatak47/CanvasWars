@@ -43,30 +43,28 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState } = React;
 
         const INITIAL_ARTISTS = [
-            { id: 1, name: "VANDAL QUEEN", votes: 142, judgeScore: 88, wallet: 0, color: '#FF2600' },
-            { id: 2, name: "THE PHANTOM", votes: 128, judgeScore: 92, wallet: 0, color: '#00CFFF' }
+            { id: 1, name: "VANDAL QUEEN", votes: 142, judgeScore: 88, color: '#FF2600' },
+            { id: 2, name: "THE PHANTOM", votes: 128, judgeScore: 92, color: '#00CFFF' }
         ];
 
         function App() {
-            const [view, setView] = useState('arena');
-            const [userPoints, setUserPoints] = useState(150); // Engagement points
+            const [userPoints, setUserPoints] = useState(150);
             const [artists, setArtists] = useState(INITIAL_ARTISTS);
-            const [totalEventPool, setTotalEventPool] = useState(525); // 1st+2nd+3rd prizes 
 
-            // Calculate Weighted Score: (Judge * 0.7) + (Crowd % * 30) 
+            // Logic: 30% Crowd weight, 70% Judge weight 
             const getWeightedScore = (artist) => {
                 const totalVotes = artists.reduce((acc, curr) => acc + curr.votes, 0);
-                const crowdPercent = (artist.votes / totalVotes) * 100;
+                const crowdPercent = totalVotes > 0 ? (artist.votes / totalVotes) * 100 : 0;
                 return ((artist.judgeScore * 0.7) + (crowdPercent * 0.3)).toFixed(1);
             };
 
             const castVote = (id) => {
                 if (userPoints >= 10) {
                     setArtists(artists.map(a => a.id === id ? { ...a, votes: a.votes + 1 } : a));
-                    setUserPoints(userPoints - 10); // Cost to vote
+                    setUserPoints(userPoints - 10);
                 } else {
                     alert("Not enough War-Points! Visit a sponsor booth to redeem more.");
                 }
@@ -78,46 +76,34 @@
                         <div className="logo">CANVAS WARS</div>
                         <div className="stats-bar">
                             <div>WAR-POINTS: <span className="stat-val">{userPoints} XP</span></div>
-                            <div>EVENT POOL: <span className="stat-val">${totalEventPool}</span></div>
+                            <div>EVENT DATE: <span className="stat-val">JUNE 6TH</span> [cite: 36]</div>
                         </div>
                     </nav>
 
                     <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
-                        
-                        {/* Header Info */}
                         <div style={{ marginBottom: '40px', borderLeft: '4px solid var(--red)', paddingLeft: '20px' }}>
-                            <div className="badge badge-live"><span className="live-dot"></span>Live from Bear Creek Park</div>
-                            <h1 style={{ fontFamily: 'Bebas Neue', fontSize: '48px', margin: '5px 0' }}>SOU-OREGON SUMMER SLAM</h1>
-                            <p style={{ color: var(--mut), fontFamily: 'IBM Plex Mono' }}>Timed Battle: 11:00 AM - 4:00 PM [cite: 3, 5]</p>
+                            <div className="badge badge-live"><span className="live-dot"></span>Live Event Voting Open</div>
+                            <h1 style={{ fontFamily: 'Bebas Neue', fontSize: '48px', margin: '5px 0' }}>BEAR CREEK PARK BATTLE [cite: 39]</h1>
+                            <p style={{ color: 'var(--mut)', fontFamily: 'IBM Plex Mono' }}>Main Event: 11:00 AM - 4:00 PM </p>
                         </div>
 
-                        {/* Battle Arena */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '25px' }}>
                             {artists.map(artist => (
                                 <div key={artist.id} className="card">
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                        <div>
-                                            <h2 style={{ fontFamily: 'Bebas Neue', fontSize: '36px', margin: 0 }}>{artist.name}</h2>
-                                            <span style={{ color: var(--mut), fontSize: '12px' }}>JUDGE RAW SCORE: {artist.judgeScore}/100</span>
-                                        </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                        <h2 style={{ fontFamily: 'Bebas Neue', fontSize: '36px', margin: 0 }}>{artist.name}</h2>
                                         <div style={{ textAlign: 'right' }}>
                                             <div style={{ fontSize: '24px', fontWeight: 'bold', color: artist.color }}>{getWeightedScore(artist)}</div>
-                                            <div style={{ fontSize: '10px', color: var(--mut) }}>WEIGHTED RANK</div>
+                                            <div style={{ fontSize: '10px', color: 'var(--mut)' }}>RANK SCORE</div>
                                         </div>
                                     </div>
-
                                     <div className="progress-container">
-                                        <div 
-                                            className="progress-fill" 
-                                            style={{ width: `${getWeightedScore(artist)}%`, background: artist.color }}
-                                        ></div>
+                                        <div className="progress-fill" style={{ width: `${getWeightedScore(artist)}%`, background: artist.color }}></div>
                                     </div>
-
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                        <span style={{ fontFamily: 'IBM Plex Mono', fontSize: '13px' }}>CROWD SUPPORT: {artist.votes}</span>
-                                        <span style={{ fontFamily: 'IBM Plex Mono', fontSize: '13px' }}>{Math.round((artist.votes / (artists[0].votes + artists[1].votes)) * 100)}%</span>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', fontFamily: 'IBM Plex Mono', fontSize: '13px' }}>
+                                        <span>CROWD: {artist.votes}</span>
+                                        <span>JUDGE: {artist.judgeScore}</span>
                                     </div>
-
                                     <button className="btn-main" style={{ width: '100%' }} onClick={() => castVote(artist.id)}>
                                         CAST VOTE (-10 XP)
                                     </button>
@@ -125,28 +111,25 @@
                             ))}
                         </div>
 
-                        {/* App Features / Rules Section */}
                         <div style={{ marginTop: '60px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
                             <div className="card" style={{borderColor: 'var(--ora)'}}>
-                                <h3 style={{fontFamily:'Bebas Neue', color: 'var(--ora)'}}>💰 CASH FLOW & PRIZES</h3>
-                                <ul style={{fontFamily: 'IBM Plex Mono', fontSize: '13px', color: var(--mut), lineHeight: '1.8'}}>
-                                    <li>Artist Entry Fee: <span style={{color: 'var(--wht)'}}>$40 [cite: 6]</span></li>
-                                    <li>1st Place Prize: <span style={{color: 'var(--wht)'}}>$300 </span></li>
-                                    <li>Auction Split: <span style={{color: 'var(--wht)'}}>70% Artist / 30% Event </span></li>
-                                    <li>Merch Sales: <span style={{color: 'var(--wht)'}}>Artist Retains 100% </span></li>
+                                <h3 style={{fontFamily:'Bebas Neue', color: 'var(--ora)'}}>💰 OFFICIAL STRUCTURE</h3>
+                                <ul style={{fontFamily: 'IBM Plex Mono', fontSize: '13px', color: 'var(--mut)', lineHeight: '1.8', listStyle: 'none', padding: 0}}>
+                                    <li>• Entry Fee: <span style={{color: 'white'}}>$40</span> [cite: 56]</li>
+                                    <li>• 1st Place Prize: <span style={{color: 'white'}}>$300</span> [cite: 17]</li>
+                                    <li>• Artist Revenue Split: <span style={{color: 'white'}}>70%</span> [cite: 23]</li>
+                                    <li>• Event Revenue Split: <span style={{color: 'white'}}>30%</span> [cite: 24]</li>
                                 </ul>
                             </div>
                             <div className="card" style={{borderColor: 'var(--blu)'}}>
-                                <h3 style={{fontFamily:'Bebas Neue', color: 'var(--blu)'}}>🎫 REDEEM POINTS</h3>
-                                <div style={{display:'flex', gap: '10px'}}>
-                                    <div style={{background: var(--s2), padding: '10px', borderRadius: '4px', textAlign: 'center', flex: 1}}>
-                                        <div style={{fontSize: '18px', fontWeight: 'bold'}}>500 XP</div>
-                                        <div style={{fontSize: '10px'}}>FREE STICKER</div>
-                                    </div>
-                                    <div style={{background: var(--s2), padding: '10px', borderRadius: '4px', textAlign: 'center', flex: 1}}>
-                                        <div style={{fontSize: '18px', fontWeight: 'bold'}}>1500 XP</div>
-                                        <div style={{fontSize: '10px'}}>VOTING BOOST (x2)</div>
-                                    </div>
+                                <h3 style={{fontFamily:'Bebas Neue', color: 'var(--blu)'}}>🎨 MATERIALS LIST [cite: 70-76]</h3>
+                                <div style={{fontFamily: 'IBM Plex Mono', fontSize: '11px', color: 'var(--mut)', display: 'grid', gridTemplateColumns: '1fr 1fr'}}>
+                                    <span>• ACRYLIC</span>
+                                    <span>• WATERCOLOR</span>
+                                    <span>• MARKER</span>
+                                    <span>• CHARCOAL</span>
+                                    <span>• GOLD LEAF</span>
+                                    <span>• GRAPHITE</span>
                                 </div>
                             </div>
                         </div>
