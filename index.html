@@ -3,40 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Wars 2026</title>
+    <title>Canvas Wars | Live Battle Engine</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #000; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .container { text-align: center; border: 2px solid #ff4500; padding: 40px; border-radius: 15px; box-shadow: 0 0 20px #ff4500; background: rgba(255, 69, 0, 0.05); }
-        h1 { color: #ff4500; font-size: 3rem; margin-bottom: 10px; letter-spacing: 2px; }
-        p { font-size: 1.2rem; color: #ccc; }
-        .status { margin-top: 20px; font-weight: bold; color: #00ff00; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;600&display=swap');
+        body { background-color: #050505; color: #fff; font-family: 'Inter', sans-serif; }
+        .neon-text { font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px #ff4500; }
+        .battle-card { background: linear-gradient(145deg, #111, #080808); border: 1px solid #333; }
+        .vote-bar { transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+        .active-glow { box-shadow: 0 0 20px rgba(255, 69, 0, 0.3); border-color: #ff4500; }
     </style>
 </head>
 <body>
-    <div id="root">
-        <div class="container">
-            <h1>CANVAS WARS</h1>
-            <p>Southern Oregon Artist Contest | Summer 2026</p>
-            <div class="status">SYSTEM ONLINE - READY FOR ARTISTS</div>
-        </div>
-    </div>
+    <div id="root"></div>
 
     <script type="text/babel">
-        // Your React logic will go here once the site is stable
-        function App() {
+        const { useState, useEffect } = React;
+
+        function CanvasWarsApp() {
+            const [checkedIn, setCheckedIn] = useState(false);
+            const [votes, setVotes] = useState({ artistA: 42, artistB: 58 });
+            const [timeLeft, setTimeLeft] = useState(300); // 5 minute battle
+            const [hasVoted, setHasVoted] = useState(false);
+
+            // Timer Logic
+            useEffect(() => {
+                if (timeLeft > 0) {
+                    const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+                    return () => clearTimeout(timer);
+                }
+            }, [timeLeft]);
+
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            };
+
+            const handleVote = (artist) => {
+                if (!hasVoted && checkedIn) {
+                    setVotes(prev => ({
+                        ...prev,
+                        [artist]: prev[artist] + 1
+                    }));
+                    setHasVoted(true);
+                }
+            };
+
             return (
-                <div className="container">
-                    <h1>CANVAS WARS</h1>
-                    <p>Southern Oregon Artist Contest | Summer 2026</p>
-                    <div className="status">LIVE PREVIEW ACTIVE</div>
+                <div className="min-h-screen p-4 md:p-8">
+                    {/* Header Section */}
+                    <header className="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4">
+                        <div>
+                            <h1 className="neon-text text-3xl font-bold text-orange-600">CANVAS WARS</h1>
+                            <p className="text-xs tracking-widest text-zinc-500 uppercase">Live Battle Engine v1.0</p>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-2xl font-mono text-white">{formatTime(timeLeft)}</div>
+                            <div className="text-[10px] text-orange-500 uppercase font-bold tracking-tighter">Round Time Remaining</div>
+                        </div>
+                    </header>
+
+                    {!checkedIn ? (
+                        /* Check-In View */
+                        <div className="max-w-md mx-auto mt-20 text-center battle-card p-10 rounded-2xl active-glow">
+                            <h2 className="text-2xl mb-4 font-bold">LIVE EVENT DETECTED</h2>
+                            <p className="text-zinc-400 mb-8">You are near a Canvas Wars sanctioned venue. Check in to unlock voting power.</p>
+                            <button 
+                                onClick={() => setCheckedIn(true)}
+                                className="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-4 rounded-lg transition-all transform hover:scale-105"
+                            >
+                                VERIFY & CHECK IN
+                            </button>
+                        </div>
+                    ) : (
+                        /* Live Voting Dashboard */
+                        <div className="max-w-4xl mx-auto space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Artist A Card */}
+                                <div className={`battle-card p-6 rounded-xl transition-all ${hasVoted ? 'opacity-80' : 'hover:border-orange-500 cursor-pointer'}`}
+                                     onClick={() => handleVote('artistA')}>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <span className="bg-zinc-800 text-[10px] px-2 py-1 rounded">ARTIST 01</span>
+                                        <span className="text-orange-500 font-bold text-xl">{votes.artistA}%</span>
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-2 uppercase tracking-tighter">The Phantom</h3>
+                                    <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden">
+                                        <div className="vote-bar bg-orange-600 h-full" style={{width: `${votes.artistA}%`}}></div>
+                                    </div>
+                                    {!hasVoted && <button className="mt-6 w-full border border-zinc-700 py-2 rounded uppercase text-xs font-bold hover:bg-white hover:text-black">Cast Vote</button>}
+                                </div>
+
+                                {/* Artist B Card */}
+                                <div className={`battle-card p-6 rounded-xl transition-all ${hasVoted ? 'opacity-80' : 'hover:border-orange-500 cursor-pointer'}`}
+                                     onClick={() => handleVote('artistB')}>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <span className="bg-zinc-800 text-[10px] px-2 py-1 rounded">ARTIST 02</span>
+                                        <span className="text-orange-500 font-bold text-xl">{votes.artistB}%</span>
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-2 uppercase tracking-tighter">Vandal Queen</h3>
+                                    <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden">
+                                        <div className="vote-bar bg-orange-600 h-full" style={{width: `${votes.artistB}%`}}></div>
+                                    </div>
+                                    {!hasVoted && <button className="mt-6 w-full border border-zinc-700 py-2 rounded uppercase text-xs font-bold hover:bg-white hover:text-black">Cast Vote</button>}
+                                </div>
+                            </div>
+
+                            {/* Live Feed Simulator */}
+                            <div className="battle-card p-4 rounded-lg border-l-4 border-orange-600">
+                                <p className="text-xs text-zinc-400">
+                                    <span className="text-orange-500 font-bold animate-pulse mr-2">● LIVE FEED:</span> 
+                                    Crowd at Southern Oregon Expo is surging. 450+ votes recorded.
+                                </p>
+                            </div>
+
+                            {/* Rewards Section */}
+                            <div className="grid grid-cols-3 gap-4 text-center">
+                                <div className="battle-card p-3 rounded-lg">
+                                    <div className="text-orange-500 font-bold">150</div>
+                                    <div className="text-[10px] uppercase text-zinc-500">Battle Points</div>
+                                </div>
+                                <div className="battle-card p-3 rounded-lg">
+                                    <div className="text-orange-500 font-bold">#4</div>
+                                    <div className="text-[10px] uppercase text-zinc-500">Global Rank</div>
+                                </div>
+                                <div className="battle-card p-3 rounded-lg">
+                                    <div className="text-orange-500 font-bold">VIP</div>
+                                    <div className="text-[10px] uppercase text-zinc-500">Status</div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         }
+
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
+        root.render(<CanvasWarsApp />);
     </script>
 </body>
 </html>
