@@ -56,12 +56,12 @@ const firebaseConfig = {
         const { useState } = React;
 
         const INITIAL_ARTISTS = [
-            { id: 1, name: "Jaws", votes: 142, judgeScore: 88, color: '#FF2600' },
-            { id: 2, name: "Aaron", votes: 128, judgeScore: 92, color: '#00CFFF' },
-            { id: 3, name: "Tami", votes: 95, judgeScore: 85, color: '#FF7A00' },
-            { id: 4, name: "Chad", votes: 110, judgeScore: 80, color: '#00FFAD' },
-            { id: 5, name: "Jim", votes: 120, judgeScore: 90, color: '#FFD700' },
-            { id: 6, name: "Mike", votes: 88, judgeScore: 84, color: '#FF00EA' }
+            { id: 1, name: "Jaws", votes: 0, judgeScore: 0, color: '#FF2600' },
+            { id: 2, name: "Aaron", votes: 0, judgeScore: 0, color: '#00CFFF' },
+            { id: 3, name: "Tami", votes: 0, judgeScore: 0, color: '#FF7A00' },
+            { id: 4, name: "Chad", votes: 0, judgeScore: 0, color: '#00FFAD' },
+            { id: 5, name: "Jim", votes: 0, judgeScore: 0, color: '#FFD700' },
+            { id: 6, name: "Mike", votes: 0, judgeScore: 0, color: '#FF00EA' }
         ];
 
         function App() {
@@ -96,7 +96,7 @@ const firebaseConfig = {
                     <div style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto' }}>
                         <div style={{ marginBottom: '40px' }}>
                             <div className="badge-live"><span className="live-dot"></span> LIVE VOTING OPEN</div>
-                            <h1 style={{ fontFamily: 'Bebas Neue', fontSize: '60px', margin: '10px 0', lineHeight: 1 }}>CanvasWars @ TimelessTreasures Hub</h1>
+                            <h1 style={{ fontFamily: 'Bebas Neue', fontSize: '60px', margin: '10px 0', lineHeight: 1 }}>CanvasWars @ TimelessTreasures</h1>
                             <p style={{ color: 'var(--mut)', fontFamily: 'IBM Plex Mono', fontSize: '14px' }}>FINISH TIME: 4:00 PM | JUDGING: 4:30 PM</p>
                         </div>
 
