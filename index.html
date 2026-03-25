@@ -1,3 +1,6 @@
+Version A
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,7 +57,7 @@
         ];
 
         function App() {
-            const [userPoints, setUserPoints] = useState(100);
+            const [userPoints, setUserPoints] = useState(150);
             const [artists, setArtists] = useState(INITIAL_ARTISTS);
 
             const getWeightedScore = (artist) => {
@@ -139,8 +142,8 @@
                 </div>
             );
         }
-        
-           const root = ReactDOM.createRoot(document.getElementById('root'));
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
 </body>
