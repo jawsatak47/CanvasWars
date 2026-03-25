@@ -24,14 +24,31 @@
     projectId: "canvaswars541",
     storageBucket: "canvaswars541.firebasestorage.app",
     messagingSenderId: "536740276923",
-    appId: "1:536740276923:web:cf29459d6cde9fc2fb579e",
-    measurementId: "G-JEG4SRT6YF"
+    appId: "1:536740276923:web:663474c7de05fd49fb579e",
+    measurementId: "G-5HPKMC0FZF"
   };
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+        async function saveBattle(battle) {
+  await addDoc(collection(db, "battles"), battle);
+}
+
+async function loadBattles() {
+  const snapshot = await getDocs(collection(db, "battles"));
+  return snapshot.docs.map(doc => doc.data());
+}
+        // TEST SAVE
+saveBattle({ name: "test battle" });
+
+// TEST LOAD
+window.onload = async () => {
+  const battles = await loadBattles();
+  console.log("Loaded:", battles);
+};
 </script>
+  };
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@400;700&family=IBM+Plex+Mono:wght@400;700&display=swap');
