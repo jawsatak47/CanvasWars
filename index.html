@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CANVAS WARS | Creative Platform</title>
+    <title>CANVAS WARS | The Battle Engine</title>
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -14,129 +14,149 @@
         
         :root {
             --bg: #060608; --s1: #0e0e12; --s2: #16161c; --bdr: #252530;
-            --red: #FF2600; --ora: #FF7A00; --blu: #00CFFF; --wht: #F0EDE8; --mut: #52526a;
+            --red: #FF2600; --ora: #FF7A00; --blu: #00CFFF; --wht: #F0EDE8; --mut: #52526a; --gold: #FFD700;
         }
 
-        body { 
-            background: var(--bg); 
-            color: var(--wht); 
-            font-family: 'Barlow Condensed', sans-serif; 
-            margin: 0;
-            overflow-x: hidden;
-        }
+        body { background: var(--bg); color: var(--wht); font-family: 'Barlow Condensed', sans-serif; margin: 0; overflow-x: hidden; }
+        .noise::after { content: ''; position: fixed; inset: 0; z-index: 999; pointer-events: none; opacity: 0.04; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-        /* Noise effect for that "Resident Artist" aesthetic */
-        .noise::after {
-            content: ''; position: fixed; inset: 0; z-index: 999; pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-        }
+        .nav { height: 70px; background: rgba(14,14,18,0.95); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; border-bottom: 1px solid var(--bdr); position: sticky; top: 0; z-index: 100; }
+        .logo { font-family: 'Bebas Neue', cursive; font-size: 32px; letter-spacing: 2px; color: var(--red); }
+        .stats-bar { display: flex; gap: 20px; font-family: 'IBM Plex Mono'; font-size: 12px; color: var(--mut); }
+        .stat-val { color: var(--wht); font-weight: bold; }
 
-        .nav { 
-            height: 60px; background: rgba(14,14,18,0.95); display: flex; 
-            align-items: center; justify-content: space-between; padding: 0 20px;
-            border-bottom: 1px solid var(--bdr); position: sticky; top: 0; z-index: 100;
-        }
-
-        .logo { 
-            font-family: 'Bebas Neue', cursive; font-size: 32px; letter-spacing: 4px;
-            background: linear-gradient(90deg, var(--red), var(--ora));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        .hero { text-align: center; padding: 80px 20px; }
-        .hero-title { font-family: 'Bebas Neue'; font-size: 80px; line-height: 0.8; margin-bottom: 20px; color: var(--red); }
+        .card { background: var(--s1); border: 1px solid var(--bdr); border-radius: 8px; padding: 20px; position: relative; overflow: hidden; }
+        .btn-main { background: var(--red); color: white; border: none; padding: 10px 20px; font-family: 'Bebas Neue'; font-size: 18px; cursor: pointer; border-radius: 4px; transition: 0.2s; }
+        .btn-main:hover { transform: scale(1.05); filter: brightness(1.2); }
         
-        .vote-card { 
-            background: var(--s1); border: 1px solid var(--bdr); border-radius: 12px; 
-            padding: 24px; transition: 0.3s; cursor: pointer;
-        }
-        .vote-card:hover { border-color: var(--red); transform: translateY(-5px); }
+        .progress-container { height: 6px; background: var(--s2); border-radius: 3px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; transition: 0.8s cubic-bezier(0.17, 0.67, 0.83, 0.67); }
+
+        .badge { font-family: 'IBM Plex Mono'; font-size: 10px; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; margin-bottom: 10px; display: inline-block; }
+        .badge-live { background: rgba(255, 38, 0, 0.2); color: var(--red); border: 1px solid var(--red); }
         
-        .btn-red { 
-            background: var(--red); color: white; border: none; padding: 12px 30px; 
-            font-family: 'Bebas Neue'; font-size: 20px; cursor: pointer; border-radius: 4px;
-        }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+        .live-dot { width: 8px; height: 8px; background: var(--red); border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 1.5s infinite; }
     </style>
 </head>
 <body class="noise">
-    <div id="root">
-        <div style="height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column;">
-            <h1 style="font-family:sans-serif; color:#FF2600;">CANVAS WARS</h1>
-            <p style="color:#52526a;">Initializing Battle Engine...</p>
-        </div>
-    </div>
+    <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        function CanvasWars() {
-            const [view, setView] = useState('home');
-            const [votes, setVotes] = useState({ artistA: 64, artistB: 36 });
+        const INITIAL_ARTISTS = [
+            { id: 1, name: "VANDAL QUEEN", votes: 142, judgeScore: 88, wallet: 0, color: '#FF2600' },
+            { id: 2, name: "THE PHANTOM", votes: 128, judgeScore: 92, wallet: 0, color: '#00CFFF' }
+        ];
 
-            const handleVote = (id) => {
-                setVotes(prev => ({
-                    ...prev,
-                    [id]: prev[id] + 1
-                }));
+        function App() {
+            const [view, setView] = useState('arena');
+            const [userPoints, setUserPoints] = useState(150); // Engagement points
+            const [artists, setArtists] = useState(INITIAL_ARTISTS);
+            const [totalEventPool, setTotalEventPool] = useState(525); // 1st+2nd+3rd prizes 
+
+            // Calculate Weighted Score: (Judge * 0.7) + (Crowd % * 30) 
+            const getWeightedScore = (artist) => {
+                const totalVotes = artists.reduce((acc, curr) => acc + curr.votes, 0);
+                const crowdPercent = (artist.votes / totalVotes) * 100;
+                return ((artist.judgeScore * 0.7) + (crowdPercent * 0.3)).toFixed(1);
+            };
+
+            const castVote = (id) => {
+                if (userPoints >= 10) {
+                    setArtists(artists.map(a => a.id === id ? { ...a, votes: a.votes + 1 } : a));
+                    setUserPoints(userPoints - 10); // Cost to vote
+                } else {
+                    alert("Not enough War-Points! Visit a sponsor booth to redeem more.");
+                }
             };
 
             return (
                 <div>
                     <nav className="nav">
                         <div className="logo">CANVAS WARS</div>
-                        <div style={{display:'flex', gap:'20px'}}>
-                            <span onClick={() => setView('home')} style={{cursor:'pointer', fontFamily:'Bebas Neue'}}>HOME</span>
-                            <span onClick={() => setView('live')} style={{cursor:'pointer', fontFamily:'Bebas Neue', color:'var(--red)'}}>LIVE ARENA</span>
+                        <div className="stats-bar">
+                            <div>WAR-POINTS: <span className="stat-val">{userPoints} XP</span></div>
+                            <div>EVENT POOL: <span className="stat-val">${totalEventPool}</span></div>
                         </div>
                     </nav>
 
-                    <div style={{maxWidth:'1100px', margin:'0 auto', padding:'20px'}}>
-                        {view === 'home' ? (
-                            <div className="hero">
-                                <h1 className="hero-title">CREATIVE<br/>COMBAT</h1>
-                                <p style={{fontFamily:'IBM Plex Mono', color:'var(--mut)', marginBottom:'40px'}}>SOUTHERN OREGON | SUMMER 2026</p>
-                                <button className="btn-red" onClick={() => setView('live')}>ENTER THE ARENA</button>
-                            </div>
-                        ) : (
-                            <div style={{marginTop:'40px'}}>
-                                <div style={{display:'flex', alignItems:'center', gap:'10px', marginBottom:'30px'}}>
-                                    <div style={{width:'10px', height:'10px', borderRadius:'50%', background:'var(--red)', animation:'pulse 1s infinite'}}></div>
-                                    <span style={{fontFamily:'IBM Plex Mono', fontSize:'12px'}}>LIVE EVENT: LIVE AUDIENCE VOTING OPEN</span>
-                                </div>
+                    <div style={{ padding: '30px', maxWidth: '1200px', margin: '0 auto' }}>
+                        
+                        {/* Header Info */}
+                        <div style={{ marginBottom: '40px', borderLeft: '4px solid var(--red)', paddingLeft: '20px' }}>
+                            <div className="badge badge-live"><span className="live-dot"></span>Live from Bear Creek Park</div>
+                            <h1 style={{ fontFamily: 'Bebas Neue', fontSize: '48px', margin: '5px 0' }}>SOU-OREGON SUMMER SLAM</h1>
+                            <p style={{ color: var(--mut), fontFamily: 'IBM Plex Mono' }}>Timed Battle: 11:00 AM - 4:00 PM [cite: 3, 5]</p>
+                        </div>
 
-                                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'20px'}}>
-                                    <div className="vote-card" onClick={() => handleVote('artistA')}>
-                                        <h2 style={{fontFamily:'Bebas Neue', fontSize:'32px'}}>ARTIST 01</h2>
-                                        <div style={{height:'8px', background:'var(--s2)', borderRadius:'4px', margin:'15px 0'}}>
-                                            <div style={{height:'100%', background:'var(--blu)', width:`${(votes.artistA / (votes.artistA + votes.artistB)) * 100}%`, transition:'0.5s', borderRadius:'4px'}}></div>
+                        {/* Battle Arena */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '25px' }}>
+                            {artists.map(artist => (
+                                <div key={artist.id} className="card">
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                                        <div>
+                                            <h2 style={{ fontFamily: 'Bebas Neue', fontSize: '36px', margin: 0 }}>{artist.name}</h2>
+                                            <span style={{ color: var(--mut), fontSize: '12px' }}>JUDGE RAW SCORE: {artist.judgeScore}/100</span>
                                         </div>
-                                        <div style={{display:'flex', justifyContent:'space-between', fontFamily:'IBM Plex Mono', fontSize:'14px'}}>
-                                            <span>THE PHANTOM</span>
-                                            <span style={{color:'var(--blu)'}}>{Math.round((votes.artistA / (votes.artistA + votes.artistB)) * 100)}%</span>
+                                        <div style={{ textAlign: 'right' }}>
+                                            <div style={{ fontSize: '24px', fontWeight: 'bold', color: artist.color }}>{getWeightedScore(artist)}</div>
+                                            <div style={{ fontSize: '10px', color: var(--mut) }}>WEIGHTED RANK</div>
                                         </div>
                                     </div>
 
-                                    <div className="vote-card" onClick={() => handleVote('artistB')}>
-                                        <h2 style={{fontFamily:'Bebas Neue', fontSize:'32px'}}>ARTIST 02</h2>
-                                        <div style={{height:'8px', background:'var(--s2)', borderRadius:'4px', margin:'15px 0'}}>
-                                            <div style={{height:'100%', background:'var(--red)', width:`${(votes.artistB / (votes.artistA + votes.artistB)) * 100}%`, transition:'0.5s', borderRadius:'4px'}}></div>
-                                        </div>
-                                        <div style={{display:'flex', justifyContent:'space-between', fontFamily:'IBM Plex Mono', fontSize:'14px'}}>
-                                            <span>VANDAL QUEEN</span>
-                                            <span style={{color:'var(--red)'}}>{Math.round((votes.artistB / (votes.artistA + votes.artistB)) * 100)}%</span>
-                                        </div>
+                                    <div className="progress-container">
+                                        <div 
+                                            className="progress-fill" 
+                                            style={{ width: `${getWeightedScore(artist)}%`, background: artist.color }}
+                                        ></div>
+                                    </div>
+
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                                        <span style={{ fontFamily: 'IBM Plex Mono', fontSize: '13px' }}>CROWD SUPPORT: {artist.votes}</span>
+                                        <span style={{ fontFamily: 'IBM Plex Mono', fontSize: '13px' }}>{Math.round((artist.votes / (artists[0].votes + artists[1].votes)) * 100)}%</span>
+                                    </div>
+
+                                    <button className="btn-main" style={{ width: '100%' }} onClick={() => castVote(artist.id)}>
+                                        CAST VOTE (-10 XP)
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* App Features / Rules Section */}
+                        <div style={{ marginTop: '60px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+                            <div className="card" style={{borderColor: 'var(--ora)'}}>
+                                <h3 style={{fontFamily:'Bebas Neue', color: 'var(--ora)'}}>💰 CASH FLOW & PRIZES</h3>
+                                <ul style={{fontFamily: 'IBM Plex Mono', fontSize: '13px', color: var(--mut), lineHeight: '1.8'}}>
+                                    <li>Artist Entry Fee: <span style={{color: 'var(--wht)'}}>$40 [cite: 6]</span></li>
+                                    <li>1st Place Prize: <span style={{color: 'var(--wht)'}}>$300 </span></li>
+                                    <li>Auction Split: <span style={{color: 'var(--wht)'}}>70% Artist / 30% Event </span></li>
+                                    <li>Merch Sales: <span style={{color: 'var(--wht)'}}>Artist Retains 100% </span></li>
+                                </ul>
+                            </div>
+                            <div className="card" style={{borderColor: 'var(--blu)'}}>
+                                <h3 style={{fontFamily:'Bebas Neue', color: 'var(--blu)'}}>🎫 REDEEM POINTS</h3>
+                                <div style={{display:'flex', gap: '10px'}}>
+                                    <div style={{background: var(--s2), padding: '10px', borderRadius: '4px', textAlign: 'center', flex: 1}}>
+                                        <div style={{fontSize: '18px', fontWeight: 'bold'}}>500 XP</div>
+                                        <div style={{fontSize: '10px'}}>FREE STICKER</div>
+                                    </div>
+                                    <div style={{background: var(--s2), padding: '10px', borderRadius: '4px', textAlign: 'center', flex: 1}}>
+                                        <div style={{fontSize: '18px', fontWeight: 'bold'}}>1500 XP</div>
+                                        <div style={{fontSize: '10px'}}>VOTING BOOST (x2)</div>
                                     </div>
                                 </div>
-                                <p style={{textAlign:'center', marginTop:'40px', color:'var(--mut)', fontSize:'12px', fontFamily:'IBM Plex Mono'}}>TAP CARD TO CAST VOTE</p>
                             </div>
-                        )}
+                        </div>
                     </div>
                 </div>
             );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<CanvasWars />);
+        root.render(<App />);
     </script>
 </body>
 </html>
