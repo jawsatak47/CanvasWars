@@ -3,146 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canvas Wars | Live Battle Engine</title>
+    <title>CANVAS WARS | Creative Platform</title>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;600&display=swap');
-        body { background-color: #050505; color: #fff; font-family: 'Inter', sans-serif; }
-        .neon-text { font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px #ff4500; }
-        .battle-card { background: linear-gradient(145deg, #111, #080808); border: 1px solid #333; }
-        .vote-bar { transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
-        .active-glow { box-shadow: 0 0 20px rgba(255, 69, 0, 0.3); border-color: #ff4500; }
+        /* This is the CSS logic you provided, optimized for the browser */
+        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,400&family=IBM+Plex+Mono:wght@400;500;700&display=swap');
+        
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        :root{
+            --bg:#060608; --s1:#0e0e12; --s2:#16161c; --s3:#1e1e26; --bdr:#252530;
+            --red:#FF2600; --ora:#FF7A00; --yel:#FFD600; --blu:#00CFFF; --grn:#00FF88;
+            --pnk:#FF2D78; --wht:#F0EDE8; --mut:#52526a; --mut2:#2e2e40;
+        }
+        body{background:var(--bg);color:var(--wht);font-family:'Barlow Condensed',sans-serif;overflow-x:hidden}
+        
+        /* NOISE OVERLAY */
+        .noise-layer::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;
+            background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+            opacity:.5}
+
+        .bebas{font-family:'Bebas Neue',cursive}
+        .mono{font-family:'IBM Plex Mono',monospace}
+        
+        /* Core Layout Styles from your prompt */
+        .nav{position:sticky;top:0;z-index:300;background:rgba(6,6,8,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px}
+        .logo{font-family:'Bebas Neue',cursive;font-size:28px;letter-spacing:5px;background:linear-gradient(90deg,var(--red),var(--ora));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .hero-title { font-family: 'Bebas Neue', cursive; font-size: clamp(60px, 10vw, 120px); line-height: 0.9; color: var(--red); text-shadow: 0 0 20px rgba(255, 38, 0, 0.5); }
+        .btn-red { background: var(--red); color: white; font-family: 'Bebas Neue'; padding: 15px 30px; border-radius: 5px; text-decoration: none; display: inline-block; letter-spacing: 2px; transition: 0.3s; }
+        .btn-red:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--red); }
+        .card { background: var(--s1); border: 1px solid var(--bdr); padding: 20px; border-radius: 10px; margin-top: 20px; }
+        
+        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .live-dot { width: 10px; height: 10px; background: var(--red); border-radius: 50%; display: inline-block; margin-right: 10px; animation: flash 1s infinite; }
     </style>
 </head>
-<body>
+<body class="noise-layer">
+
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        function CanvasWarsApp() {
-            const [checkedIn, setCheckedIn] = useState(false);
-            const [votes, setVotes] = useState({ artistA: 42, artistB: 58 });
-            const [timeLeft, setTimeLeft] = useState(300); // 5 minute battle
-            const [hasVoted, setHasVoted] = useState(false);
-
-            // Timer Logic
-            useEffect(() => {
-                if (timeLeft > 0) {
-                    const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-                    return () => clearTimeout(timer);
-                }
-            }, [timeLeft]);
-
-            const formatTime = (seconds) => {
-                const mins = Math.floor(seconds / 60);
-                const secs = seconds % 60;
-                return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-            };
-
-            const handleVote = (artist) => {
-                if (!hasVoted && checkedIn) {
-                    setVotes(prev => ({
-                        ...prev,
-                        [artist]: prev[artist] + 1
-                    }));
-                    setHasVoted(true);
-                }
-            };
+        function App() {
+            const [view, setView] = useState('home');
+            const [votes, setVotes] = useState({ artistA: 50, artistB: 50 });
 
             return (
-                <div className="min-h-screen p-4 md:p-8">
-                    {/* Header Section */}
-                    <header className="flex justify-between items-center mb-8 border-b border-zinc-800 pb-4">
-                        <div>
-                            <h1 className="neon-text text-3xl font-bold text-orange-600">CANVAS WARS</h1>
-                            <p className="text-xs tracking-widest text-zinc-500 uppercase">Live Battle Engine v1.0</p>
+                <div className="page">
+                    {/* NAV BAR */}
+                    <nav className="nav">
+                        <div className="logo">CANVAS WARS</div>
+                        <div style={{display:'flex', gap:'15px'}}>
+                            <button onClick={() => setView('home')} style={{background:'none', border:'none', color:'white', cursor:'pointer', fontFamily:'Bebas Neue', fontSize:'18px'}}>HOME</button>
+                            <button onClick={() => setView('vote')} style={{background:'none', border:'none', color:'white', cursor:'pointer', fontFamily:'Bebas Neue', fontSize:'18px'}}>LIVE VOTE</button>
                         </div>
-                        <div className="text-right">
-                            <div className="text-2xl font-mono text-white">{formatTime(timeLeft)}</div>
-                            <div className="text-[10px] text-orange-500 uppercase font-bold tracking-tighter">Round Time Remaining</div>
-                        </div>
-                    </header>
+                    </nav>
 
-                    {!checkedIn ? (
-                        /* Check-In View */
-                        <div className="max-w-md mx-auto mt-20 text-center battle-card p-10 rounded-2xl active-glow">
-                            <h2 className="text-2xl mb-4 font-bold">LIVE EVENT DETECTED</h2>
-                            <p className="text-zinc-400 mb-8">You are near a Canvas Wars sanctioned venue. Check in to unlock voting power.</p>
-                            <button 
-                                onClick={() => setCheckedIn(true)}
-                                className="w-full bg-orange-600 hover:bg-orange-500 text-white font-bold py-4 rounded-lg transition-all transform hover:scale-105"
-                            >
-                                VERIFY & CHECK IN
-                            </button>
-                        </div>
-                    ) : (
-                        /* Live Voting Dashboard */
-                        <div className="max-w-4xl mx-auto space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Artist A Card */}
-                                <div className={`battle-card p-6 rounded-xl transition-all ${hasVoted ? 'opacity-80' : 'hover:border-orange-500 cursor-pointer'}`}
-                                     onClick={() => handleVote('artistA')}>
-                                    <div className="flex justify-between items-start mb-4">
-                                        <span className="bg-zinc-800 text-[10px] px-2 py-1 rounded">ARTIST 01</span>
-                                        <span className="text-orange-500 font-bold text-xl">{votes.artistA}%</span>
+                    <div className="container">
+                        {view === 'home' ? (
+                            <div style={{textAlign:'center', paddingTop: '100px'}}>
+                                <h1 className="hero-title">CREATIVE <br/> COMBAT</h1>
+                                <p style={{color: 'var(--mut)', margin: '20px 0', fontSize: '18px'}}>Weekly Battles | Live Audience Voting | Summer 2026</p>
+                                <button onClick={() => setView('vote')} className="btn-red">ENTER THE ARENA</button>
+                                
+                                <div className="card" style={{marginTop: '100px'}}>
+                                    <h2 className="bebas" style={{fontSize: '30px', color: 'var(--ora)'}}>PLATFORM STATS</h2>
+                                    <div style={{display:'flex', justifyContent:'space-around', marginTop:'20px'}}>
+                                        <div><div className="bebas" style={{fontSize:'40px'}}>14</div><div className="mono" style={{fontSize:'10px'}}>ALBUMS</div></div>
+                                        <div><div className="bebas" style={{fontSize:'40px'}}>$2k</div><div className="mono" style={{fontSize:'10px'}}>PRIZE POOL</div></div>
+                                        <div><div className="bebas" style={{fontSize:'40px'}}>50+</div><div className="mono" style={{fontSize:'10px'}}>ARTISTS</div></div>
                                     </div>
-                                    <h3 className="text-2xl font-bold mb-2 uppercase tracking-tighter">The Phantom</h3>
-                                    <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden">
-                                        <div className="vote-bar bg-orange-600 h-full" style={{width: `${votes.artistA}%`}}></div>
-                                    </div>
-                                    {!hasVoted && <button className="mt-6 w-full border border-zinc-700 py-2 rounded uppercase text-xs font-bold hover:bg-white hover:text-black">Cast Vote</button>}
-                                </div>
-
-                                {/* Artist B Card */}
-                                <div className={`battle-card p-6 rounded-xl transition-all ${hasVoted ? 'opacity-80' : 'hover:border-orange-500 cursor-pointer'}`}
-                                     onClick={() => handleVote('artistB')}>
-                                    <div className="flex justify-between items-start mb-4">
-                                        <span className="bg-zinc-800 text-[10px] px-2 py-1 rounded">ARTIST 02</span>
-                                        <span className="text-orange-500 font-bold text-xl">{votes.artistB}%</span>
-                                    </div>
-                                    <h3 className="text-2xl font-bold mb-2 uppercase tracking-tighter">Vandal Queen</h3>
-                                    <div className="w-full bg-zinc-900 h-2 rounded-full overflow-hidden">
-                                        <div className="vote-bar bg-orange-600 h-full" style={{width: `${votes.artistB}%`}}></div>
-                                    </div>
-                                    {!hasVoted && <button className="mt-6 w-full border border-zinc-700 py-2 rounded uppercase text-xs font-bold hover:bg-white hover:text-black">Cast Vote</button>}
                                 </div>
                             </div>
+                        ) : (
+                            <div className="ci-step" style={{paddingTop: '50px'}}>
+                                <div style={{display:'flex', alignItems:'center', marginBottom: '20px'}}>
+                                    <span className="live-dot"></span>
+                                    <span className="mono" style={{color: 'var(--red)', fontSize: '12px'}}>LIVE BATTLE: MEDFORD EXPO</span>
+                                </div>
+                                <h1 className="bebas" style={{fontSize: '50px'}}>AUDIENCE CHOICE</h1>
+                                
+                                <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap: '20px', marginTop: '30px'}}>
+                                    <div className="card" style={{textAlign:'center', cursor:'pointer'}} onClick={() => setVotes({...votes, artistA: votes.artistA + 1})}>
+                                        <h2 className="bebas" style={{fontSize: '30px'}}>THE PHANTOM</h2>
+                                        <div style={{height:'10px', background:'var(--s3)', marginTop:'10px', borderRadius:'5px'}}>
+                                            <div style={{height:'100%', background:'var(--blu)', width: `${(votes.artistA / (votes.artistA + votes.artistB)) * 100}%`, transition:'0.3s'}}></div>
+                                        </div>
+                                        <p className="mono" style={{marginTop:'10px'}}>{Math.round((votes.artistA / (votes.artistA + votes.artistB)) * 100)}%</p>
+                                    </div>
 
-                            {/* Live Feed Simulator */}
-                            <div className="battle-card p-4 rounded-lg border-l-4 border-orange-600">
-                                <p className="text-xs text-zinc-400">
-                                    <span className="text-orange-500 font-bold animate-pulse mr-2">● LIVE FEED:</span> 
-                                    Crowd at Southern Oregon Expo is surging. 450+ votes recorded.
-                                </p>
+                                    <div className="card" style={{textAlign:'center', cursor:'pointer'}} onClick={() => setVotes({...votes, artistB: votes.artistB + 1})}>
+                                        <h2 className="bebas" style={{fontSize: '30px'}}>VANDAL QUEEN</h2>
+                                        <div style={{height:'10px', background:'var(--s3)', marginTop:'10px', borderRadius:'5px'}}>
+                                            <div style={{height:'100%', background:'var(--red)', width: `${(votes.artistB / (votes.artistA + votes.artistB)) * 100}%`, transition:'0.3s'}}></div>
+                                        </div>
+                                        <p className="mono" style={{marginTop:'10px'}}>{Math.round((votes.artistB / (votes.artistA + votes.artistB)) * 100)}%</p>
+                                    </div>
+                                </div>
+                                <p style={{textAlign:'center', marginTop:'40px', color:'var(--mut)'}} className="mono">Tap an artist to cast your live vote</p>
                             </div>
-
-                            {/* Rewards Section */}
-                            <div className="grid grid-cols-3 gap-4 text-center">
-                                <div className="battle-card p-3 rounded-lg">
-                                    <div className="text-orange-500 font-bold">150</div>
-                                    <div className="text-[10px] uppercase text-zinc-500">Battle Points</div>
-                                </div>
-                                <div className="battle-card p-3 rounded-lg">
-                                    <div className="text-orange-500 font-bold">#4</div>
-                                    <div className="text-[10px] uppercase text-zinc-500">Global Rank</div>
-                                </div>
-                                <div className="battle-card p-3 rounded-lg">
-                                    <div className="text-orange-500 font-bold">VIP</div>
-                                    <div className="text-[10px] uppercase text-zinc-500">Status</div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             );
         }
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<CanvasWarsApp />);
+        root.render(<App />);
     </script>
 </body>
 </html>
