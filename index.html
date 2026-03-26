@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CANVAS WARS presented by TimelessTreasuresHub and Oh's Osaka | The Battle Engine</title>
+    <title>CANVAS WARS | The Battle Engine</title>
     
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -134,7 +134,7 @@
         <input 
             type="time" 
             value={"June 6, 2026 16:00:00"} 
-            onChange={(e) => setTargetTime("June 6, 2026 16:00:00"}
+            onChange={(e) => setTargetTime(e.target.value)}
             style={{background: 'rgba(0,0,0,0.3)', border: '1px solid #fff', color: '#fff', fontSize: '10px', borderRadius: '4px', padding: '2px 5px'}}
         />
     </div>
