@@ -127,6 +127,18 @@
                     <div style={{ padding: '40px 20px', maxWidth: '1200px', margin: '0 auto' }}>
                         <div style={{ marginBottom: '40px' }}>
                             <div className="badge-live"><span className="live-dot"></span> LIVE VOTING OPEN</div>
+                            <div className="timer-banner">
+    <div className="timer-label">BATTLE ENDS IN:</div>
+    <div className="timer-digits">{timeLeft || "00:00:00"}</div>
+    <div style={{marginTop: '8px'}}>
+        <input 
+            type="time" 
+            value={targetTime} 
+            onChange={(e) => setTargetTime(e.target.value)}
+            style={{background: 'rgba(0,0,0,0.3)', border: '1px solid #fff', color: '#fff', fontSize: '10px', borderRadius: '4px', padding: '2px 5px'}}
+        />
+    </div>
+</div>
                             <h1 style={{ fontFamily: 'Bebas Neue', fontSize: '60px', margin: '10px 0', lineHeight: 1 }}>CanvasWars @ TimelessTreasures</h1>
                             <p style={{ color: 'var(--mut)', fontFamily: 'IBM Plex Mono', fontSize: '14px' }}>FINISH TIME: June 6 2026 4:00 PM | JUDGING: 4:30 PM</p>
                         </div>
