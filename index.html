@@ -35,6 +35,27 @@
         .badge-live { background: rgba(255, 38, 0, 0.15); color: var(--red); border: 1px solid var(--red); font-family: 'IBM Plex Mono'; font-size: 10px; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; }
         .live-dot { width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .timer-banner {
+    background: linear-gradient(90deg, #FF2600, #8b0000);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+.timer-digits {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(32px, 8vw, 42px); /* Responsive sizing */
+    font-weight: bold;
+    color: white;
+}
+.timer-label {
+    font-family: 'Bebas Neue';
+    font-size: 14px;
+    letter-spacing: 2px;
+    color: white;
+    opacity: 0.9;
+}
     </style>
 </head>
 <body class="noise">
@@ -48,11 +69,33 @@
             { id: 2, name: "Aaron", votes: 0, judgeScore: 0, color: '#00CFFF' },
             { id: 3, name: "Tami", votes: 0, judgeScore: 0, color: '#FF7A00' },
             { id: 4, name: "Chad", votes: 0, judgeScore: 0, color: '#00FFAD' },
-            { id: 5, name: "Jim", votes: 0, judgeScore: 5, color: '#FFD700' },
+            { id: 5, name: "Jim", votes: 0, judgeScore: 0, color: '#FFD700' },
             { id: 6, name: "Mike", votes: 0, judgeScore: 0, color: '#FF00EA' }
         ];
 
-        function App() {
+        function App() {const [targetTime, setTargetTime] = React.useState("16:00");
+    const [timeLeft, setTimeLeft] = React.useState("");
+
+    React.useEffect(() => {
+        const interval = setInterval(() => {
+            const now = new Date();
+            const target = new Date();
+            const [hours, minutes] = targetTime.split(':');
+            target.setHours(parseInt(hours), parseInt(minutes), 0);
+
+            const diff = target - now;
+            if (diff <= 0) {
+                setTimeLeft("00:00:00");
+                clearInterval(interval);
+            } else {
+                const h = Math.floor((diff / 3600000) % 24).toString().padStart(2, '0');
+                const m = Math.floor((diff / 60000) % 60).toString().padStart(2, '0');
+                const s = Math.floor((diff / 1000) % 60).toString().padStart(2, '0');
+                setTimeLeft(`${h}:${m}:${s}`);
+            }
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [targetTime]);
             const [userPoints, setUserPoints] = useState(50);
             const [artists, setArtists] = useState(INITIAL_ARTISTS);
 
