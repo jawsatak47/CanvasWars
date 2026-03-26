@@ -54,6 +54,10 @@
     measurementId: "G-FC9D1C3CT2"
   };
 
+          firebase.initializeApp(firebaseConfig);
+  window.db = firebase.firestore();
+
+  console.log("Firebase ready");
 
   const analytics = getAnalytics(app);
         //
