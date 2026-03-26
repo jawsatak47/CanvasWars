@@ -60,7 +60,8 @@ const app = firebase.initializeApp({
 // Firestore
 window.db = firebase.firestore(app);
 
-console.log("Firebase ready (working version)");
+// ✅ remove analytics for now, it crashes the page
+console.log("Firebase ready");
 
   const analytics = getAnalytics(app);
         //
