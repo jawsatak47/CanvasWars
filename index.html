@@ -41,6 +41,30 @@
     <div id="root"></div>
 
     <script type="text/babel">
+          const firebaseConfig = {
+    apiKey: "AIzaSyBl--Wl_fB_YZ-yDy98o4mXkmJUoZT7ojk",
+    authDomain: "cw-main541.firebaseapp.com",
+    projectId: "cw-main541",
+    storageBucket: "cw-main541.firebasestorage.app",
+    messagingSenderId: "335313025427",
+    appId: "1:335313025427:web:fb94c0b05df197934bd066",
+    measurementId: "G-FC9D1C3CT2"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+        // SAVE
+function saveBattle(battle) {
+  db.collection("battles").add(battle);
+}
+
+// LOAD
+async function loadBattles() {
+  const snapshot = await db.collection("battles").get();
+  return snapshot.docs.map(doc => doc.data());
+}
+</script>
         const { useState } = React;
 
         const INITIAL_ARTISTS = [
