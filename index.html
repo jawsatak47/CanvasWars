@@ -48,7 +48,7 @@
             { id: 2, name: "Aaron", votes: 0, judgeScore: 0, color: '#00CFFF' },
             { id: 3, name: "Tami", votes: 0, judgeScore: 0, color: '#FF7A00' },
             { id: 4, name: "Chad", votes: 0, judgeScore: 0, color: '#00FFAD' },
-            { id: 5, name: "Jim", votes: 0, judgeScore: 0, color: '#FFD700' },
+            { id: 5, name: "Jim", votes: 0, judgeScore: 5, color: '#FFD700' },
             { id: 6, name: "Mike", votes: 0, judgeScore: 0, color: '#FF00EA' }
         ];
 
@@ -67,7 +67,7 @@
                     setArtists(artists.map(a => a.id === id ? { ...a, votes: a.votes + 1 } : a));
                     setUserPoints(userPoints - 10);
                 } else {
-                    alert("Low XP! Visit a sponsor booth to refill.");
+                    alert("Low XP! Choose Wisley!");
                 }
             };
 
@@ -85,7 +85,7 @@
                         <div style={{ marginBottom: '40px' }}>
                             <div className="badge-live"><span className="live-dot"></span> LIVE VOTING OPEN</div>
                             <h1 style={{ fontFamily: 'Bebas Neue', fontSize: '60px', margin: '10px 0', lineHeight: 1 }}>CanvasWars @ TimelessTreasures</h1>
-                            <p style={{ color: 'var(--mut)', fontFamily: 'IBM Plex Mono', fontSize: '14px' }}>FINISH TIME: 4:00 PM | JUDGING: 4:30 PM</p>
+                            <p style={{ color: 'var(--mut)', fontFamily: 'IBM Plex Mono', fontSize: '14px' }}>FINISH TIME: June 6 2026 4:00 PM | JUDGING: 4:30 PM</p>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
