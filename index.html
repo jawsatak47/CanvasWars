@@ -129,11 +129,11 @@
                             <div className="badge-live"><span className="live-dot"></span> LIVE VOTING OPEN</div>
                             <div className="timer-banner">
     <div className="timer-label">BATTLE ENDS IN:</div>
-    <div className="timer-digits">{timeLeft || "74:00:00"}</div>
+    <div className="timer-digits">{timeLeft || "00:00:00"}</div>
     <div style={{marginTop: '8px'}}>
         <input 
             type="time" 
-            value={targetTime} 
+            value={"June 6, 2026 16:00:00"} 
             onChange={(e) => setTargetTime(e.target.value)}
             style={{background: 'rgba(0,0,0,0.3)', border: '1px solid #fff', color: '#fff', fontSize: '10px', borderRadius: '4px', padding: '2px 5px'}}
         />
